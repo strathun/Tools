@@ -7,7 +7,7 @@ function [pxx1,f] = psdWalker(data,avgs,Fs,varargin)
 %   recording device
 
 % checks for variable input: ground measurement for recording device
-if nargin > 4  
+if nargin > 3  
     groundPower = varargin{1}; 
     load(groundPower);
 else
