@@ -1,18 +1,27 @@
-function [pxx1,f] = psdWalker(data,avgs,Fs)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
-%% power using Welch method
+function [pxx1,f] = psdWalker(data,avgs,Fs,varargin)
+% [pxx1,f] = psdWalker(data,avgs,Fs)
+% power spectral density using Welch method
 % basically just pwelch...
-%load('groundPower');
+% Inputs :
+%   varargin{1}: name of file ('string') containing power calc of grounded
+%   recording device
 
-% na = 64; %number of averages
-nx = max(size(data));
-w = floor(nx/avgs);
+% checks for variable input: ground measurement for recording device
+if nargin > 4  
+    groundPower = varargin{1}; 
+    load(groundPower);
+else
+    groundPower = 0;
+end
+
+nx = max(size(data));                   % number of samples
+w = floor(nx/avgs);                     % window. Divides time domain data up into sections of length w
 [pxx, f] = pwelch(data,w,[],[],Fs);
 
-% pxx = pxx - groundPower;  %put back in if not using Mohits stuff
+pxx = pxx - groundPower;    % subtracts instrument noise power
+
 % (7/24/2018)
-pxx1 = (sqrt(pxx))*1e9; %took out the /2 for now... Not really sure what the correct method is.
+pxx1 = (sqrt(pxx))*1e9; % converts to nV
 
 %  noiseArray(i,:) = pxx1 ;
 %  powerArray(i,:) = pxx ; 
